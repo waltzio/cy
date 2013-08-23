@@ -8,7 +8,7 @@ Generates Cryptographically Secure Reusable Keys
 ## Dependencies
 - Obviously, you need to install [node.js](http://nodejs.org).
 - [MongoDB](http://www.mongodb.org/)
-- You might need to install CoffeeScript globally.  I'm honestly not sure.
+- You might need to install CoffeeScript globally.  I'm honestly not sure.  
 `npm install coffee-script -g` *this might need some sudo magic*
 - [Foreman](https://github.com/ddollar/foreman) is optional
 
