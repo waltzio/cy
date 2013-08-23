@@ -2,7 +2,9 @@
 if not process.env?.application_env
 	process.env.application_env = "local"
 
-configs = {}
+configs = {
+	name: "Cydoemus"
+}
 
 
 switch process.env.application_env

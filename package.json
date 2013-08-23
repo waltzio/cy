@@ -5,7 +5,8 @@
   "private": true,
   "dependencies": {
     "simple-api": "~0.0",
-    "mongoose": "~3.5"
+    "mongoose": "~3.5",
+    "coffee-script": "~1.6"
   },
   "engines": {
     "node": "0.10",

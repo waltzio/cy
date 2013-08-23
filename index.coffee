@@ -7,3 +7,7 @@ v0 = new api
 	port: configs.port
 	logLevel: 5
 
+v0.Controller "keys", require "#{__dirname}/api/v0/controllers/keys.coffee"
+
+console.log "#{configs.name} now running at #{configs.host}:#{configs.port}"
+
