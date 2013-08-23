@@ -20,4 +20,4 @@ Generates Random Reusable Keys
 # Usage
 For now, it just generates a random key.  And doesn't do anything with it.
 
-Go to http://localhost:3333/api/v0/keys
+Go to [http://localhost:3333/api/v0/keys](http://localhost:3333/api/v0/keys)
