@@ -1,7 +1,7 @@
 cydoemus
 ========
 
-Generates Random Reusable Keys
+Generates Cryptographically Secure Reusable Keys
 
 # Install
 
