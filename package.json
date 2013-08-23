@@ -1,0 +1,14 @@
+{
+  "name": "Cydoemus",
+  "description": "Generates Random Reusable Keys",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "simple-api": "~0.0",
+    "mongoose": "~3.5"
+  },
+  "engines": {
+    "node": "0.10",
+    "npm": "1.1.x"
+  }
+}
