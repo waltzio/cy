@@ -21,6 +21,12 @@ usersSchema.static "getByIdentifier", (ident, cb) ->
 
 	return true
 
+usersSchema.static "createWithIdentifier", (ident, cb) ->
+	user = new Users
+		identifier: ident
+
+	user.save cb
+
 
 Users = mongoose.model 'Users', usersSchema
 

@@ -11,10 +11,10 @@ keysSchema = mongoose.Schema
 		type: Date
 		default: Date.now
 
-keysSchema.static "getUserKeyByIdentifier", (userid, ident, cb) ->
+keysSchema.static "getUserKeyWithIdentifier", (user, ident, cb) ->
+	console.log user, ident
 	this.find 
-		user:
-			id: userid
+		user: user
 		identifier: ident
 	, (err, doc) ->
 			if err
@@ -26,6 +26,14 @@ keysSchema.static "getUserKeyByIdentifier", (userid, ident, cb) ->
 				return false
 
 	return true
+
+keysSchema.static "createUserKeyWithIdentifier", (user, ident, key, cb) ->
+	newKey = new Keys
+		user: user
+		identifier: ident
+		key: key
+
+	newKey.save cb
 
 
 

@@ -1,5 +1,6 @@
 global.configs = require './configs'
 global.mongoose = require 'mongoose'
+global.session = require './lib/node-session'
 api = require 'simple-api'
 
 kickoffTries = 0
