@@ -1,2 +1,2 @@
 mongo: mongod
-web: coffee index
+web: coffee index.coffee
