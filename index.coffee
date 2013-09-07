@@ -1,6 +1,6 @@
 global.configs = require './configs'
 global.mongoose = require 'mongoose'
-global.session = require './lib/node-session'
+session = require './lib/node-session'
 api = require 'simple-api'
 
 kickoffTries = 0
@@ -33,6 +33,9 @@ kickoff = () ->
 			, 500
 		else if err
 			console.log "Mongo server seems to really be down.  We tried 5 times.  Tough luck."
+
+prepareAPIRequest = (req, res, controller) ->
+	req.$session = session.start res, req
 
 
 kickoff()

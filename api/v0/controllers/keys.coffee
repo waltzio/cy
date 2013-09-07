@@ -5,12 +5,11 @@ KeysController =
 	routes:
 		getKey:
 			method: "GET"
-			pieces: ["*identifier"]
+			path: ["*identifier"]
 
 	actions:
 		getKey: (req, res, params) ->
 			console.log "Attempting to get key"
-			req.$session = session.start res, req
 
 			#This whole afterAuth thing is just temporary, because we're not doing real auth yet.
 			#Eventually this code flow will be more logical..  For now, this function is just here
