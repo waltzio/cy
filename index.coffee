@@ -2,7 +2,11 @@ global.configs = require './configs'
 global.mongoose = require 'mongoose'
 session = require './lib/node-session'
 api = require 'simple-api'
+fs = require 'fs'
+url = require 'url'
+request = require 'request'
 
+v0 = null
 kickoffTries = 0
 
 kickoff = () ->
@@ -16,6 +20,7 @@ kickoff = () ->
 				host: configs.host
 				port: configs.port
 				before: prepareAPIRequest
+				fallback: apiFallback
 				logLevel: 5
 
 			#Load Controllers
@@ -37,6 +42,50 @@ kickoff = () ->
 
 prepareAPIRequest = (req, res, controller) ->
 	req.$session = session.start res, req
+
+apiFallback = (req, res) ->
+	req.$session = session.start res, req
+	urlParts = url.parse req.url, true
+
+	if urlParts.pathname == "/login"
+		fs.readFile './views/loginTest.html', 'utf8', (err, data) ->
+			if err
+				v0.responses.internalError res
+			else
+				v0.responses.respond res, data
+	else if urlParts.pathname == "/clefCallback"
+		handleClefCallback req, res
+	else
+		v0.responses.notAvailable res
+
+handleClefCallback = (req, res) ->
+	urlParts = url.parse req.url, true
+	code = urlParts.query.code
+	url = 'https://clef.io/api/v1/authorize';
+	form = 
+ 		app_id: configs.clef.app_id
+ 		app_secret: configs.clef.app_secret
+ 		code: code
+
+ 	request.post 
+ 		url: url
+ 		form: form
+ 	, (err, resp, body) ->
+ 		clefResponse = JSON.parse body
+ 		if err or not clefResponse.access_token?
+ 			console.log "Error getting CLEF access token", err
+ 			v0.responses.notAuth res
+ 		else
+ 			req.$session.clefAccessToken = JSON.parse(body)['access_token']
+
+	 		request.get "https://clef.io/api/v1/info?access_token=#{req.$session.clefAccessToken}", (err, resp, body) ->
+	 			userInfo = JSON.parse body
+
+	 			if err or !userInfo.success? or !userInfo.success
+	 				console.log "Error getting clef user info", err
+	 				v0.responses.notAuth res
+	 			else
+	 				v0.responses.respond res, body
 
 
 kickoff()

@@ -6,7 +6,8 @@
   "dependencies": {
     "simple-api": "~0.1",
     "mongoose": "~3.5",
-    "coffee-script": "~1.6"
+    "coffee-script": "~1.6",
+    "request": "~2.27.0"
   },
   "engines": {
     "node": "0.10",
