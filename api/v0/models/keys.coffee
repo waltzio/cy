@@ -12,7 +12,6 @@ keysSchema = mongoose.Schema
 		default: Date.now
 
 keysSchema.static "getUserKeyWithIdentifier", (user, ident, cb) ->
-	console.log user, ident
 	this.find 
 		user: user
 		identifier: ident

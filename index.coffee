@@ -15,6 +15,7 @@ kickoff = () ->
 				prefix: ["api", "v0"]
 				host: configs.host
 				port: configs.port
+				before: prepareAPIRequest
 				logLevel: 5
 
 			#Load Controllers

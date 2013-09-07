@@ -19,20 +19,20 @@ KeysController =
 
 				Keys.getUserKeyWithIdentifier user, params.identifier, (err, key) =>
 					if err
-						@helpers.internalError res, "Error retrieving your key.  This probably isn't your fault"
+						@responses.internalError res, "Error retrieving your key.  This probably isn't your fault"
 					else if !key.length
 						#Key doesn't exist, so let's create a new one
 						console.log "Key doesn't exist.  Creating"
 						@helpers.generateKey (err, key) ->
 							if err
-								@helpers.internalError res, "Error generating key.  This probably isn't your fault."
+								@responses.internalError res, "Error generating key.  This probably isn't your fault."
 							else 
 								console.log "Key generated.  Persisting"
 								Keys.createUserKeyWithIdentifier user, params.identifier, key, (err, keyObj) ->
 									if err
-										@helpers.internalError res, "Your key didn't exist, so we tried to create a new one.  We got an error.  It probably wasn't your fault."
+										@responses.internalError res, "Your key didn't exist, so we tried to create a new one.  We got an error.  It probably wasn't your fault."
 									else
-										res.end JSON.stringify keyObj
+										@responses.respond res, keyObj
 
 					else
 						#Woot woot!  Key already exists!
@@ -47,7 +47,7 @@ KeysController =
 
 				Users.getByIdentifier 1337, (err, existingUser) ->
 					if err
-						@helpers.internalError res, "Error getting existing faux user.  This probably isn't your fault."
+						@responses.internalError res, "Error getting existing faux user.  This probably isn't your fault."
 					else if existingUser.length
 						console.log "Faux user already exists.  Auth the session and move on"
 
@@ -60,10 +60,7 @@ KeysController =
 						Users.createWithIdentifier 1337, (err, newUser) ->
 							#I should really make this error handler a function..  This is not very DRY
 							if err
-								res.statusCode = 500
-								res.end JSON.stringify
-									error: true
-									message: "Error Creating User.  This probably isn't your fault."
+								@responses.internalError res, "Error Creating User.  This probably isn't your fault."
 							else
 								console.log "User created.  Auth the session and move on"
 
@@ -78,13 +75,5 @@ KeysController =
 		generateKey: (cb) ->
 			crypto.randomBytes 256, (err, buff) ->
 				cb? err, buff.toString 'hex'
-
-		internalError: (res, message, statusCode = 500) ->
-			res.statusCode = statusCode
-			res.end
-				error: true
-				message: message
-
-
 
 module.exports = exports = KeysController
