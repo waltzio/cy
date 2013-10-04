@@ -5,7 +5,7 @@ KeysController =
 	routes:
 		getKey:
 			method: "GET"
-			path: ["*identifier"]
+			path: ["[.*]identifier"]
 
 	actions:
 		getKey: (req, res, params) ->

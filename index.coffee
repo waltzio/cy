@@ -45,6 +45,8 @@ prepareAPIRequest = (req, res, controller) ->
 
 apiFallback = (req, res) ->
 	req.$session = session.start res, req
+	#req.$session.user = 12345 #Fake the user for offline testing
+	
 	urlParts = url.parse req.url, true
 
 	if urlParts.pathname == "/login"
