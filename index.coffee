@@ -133,7 +133,7 @@ handleClefCallback = (req, res) ->
 	 					else
 	 						#user already exists.  Let's use that.
 	 						req.$session.user = existingUser[0]
-	 						v0.responses.respond res
+	 						v0.responses.respond res, "<script type='text/javascript'>addEventListener('message', function(e) { e.source.postMessage({auth: true}, e.origin); });</script>"
 
 
 
