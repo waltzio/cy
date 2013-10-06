@@ -3,6 +3,16 @@
 	<title>Cydoemus Login</title>
 </head>
 <body>
-<script type="text/javascript" src="https://clef.io/v2/clef.js" class="clef-button" data-app-id="775da2c4142900d03bf3fca4cb13f93e" data-color="blue" data-style="flat" data-redirect-url="http://localhost:3333/clefCallback"></script>
-</body>
+<div id="settings" data-app-id="775da2c4142900d03bf3fca4cb13f93e" data-redirect-url="http://localhost:3333/clefCallback"></div>
+<script type="text/javascript" src="https://clef.io/v2/clef.js"></script>
+<script>
+     var button = new ClefButton({
+        el: settings
+     });
+     // just doing some filling stuff that we skip 
+     // by not rendering the button
+     button.body = document.body;
+     button.buttonFrame = {};
+     button.overlayOpen();
+</script>
 </head>
