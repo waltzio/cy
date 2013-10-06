@@ -57,6 +57,8 @@ apiFallback = (req, res) ->
 				v0.responses.respond res, data
 	else if urlParts.pathname == "/clefCallback"
 		handleClefCallback req, res
+	else if urlParts.pathname == "/logout"
+		handleBrowserLogout req, res
 	else
 		v0.responses.notAvailable res
 
@@ -89,6 +91,12 @@ handleClefLogout = (req, res) ->
 	 				for sess in session.sessions
 	 					if sess.user.identifier == userInfo.info.id
 	 						sess.user = false
+
+handleBrowserLogout = (req, res) ->
+	if req.$session
+		req.$session.user = false
+
+	v0.responses.respond res
 
 handleClefCallback = (req, res) ->
 	urlParts = url.parse req.url, true
