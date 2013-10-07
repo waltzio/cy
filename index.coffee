@@ -59,6 +59,8 @@ apiFallback = (req, res) ->
 		handleClefCallback req, res
 	else if urlParts.pathname == "/logout"
 		handleBrowserLogout req, res
+	else if urlParts.pathname == "/check"
+		handleAuthenticationCheck req, res
 	else
 		v0.responses.notAvailable res
 
@@ -97,6 +99,16 @@ handleBrowserLogout = (req, res) ->
 		req.$session.user = false
 
 	v0.responses.respond res
+
+
+handleAuthenticationCheck = (req, res) ->
+	if req.$session? and req.$session.user
+		v0.responses.respond res,
+			user: true
+	else
+		v0.responses.respond res,
+			user: false
+
 
 handleClefCallback = (req, res) ->
 	urlParts = url.parse req.url, true
