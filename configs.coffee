@@ -25,7 +25,7 @@ switch process.env.application_env
 		configs.url = "http://www.cydoemus.com"
 		configs.host = null
 		configs.clef =
-			app_id: '775da2c4142900d03bf3fca4cb13f93e'
-			app_secret: '7d577bf2fdb7b9d92283def6fd3e11fb'
+			app_id: process.env.CLEF_APP_ID
+			app_secret: process.env.CLEF_APP_SECRET
 
 module.exports = exports = configs
