@@ -1,1 +1,1 @@
-web: node index.coffee
+web: coffee index.coffee
