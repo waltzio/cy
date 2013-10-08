@@ -118,6 +118,8 @@ handleClefCallback = (req, res) ->
  		app_secret: configs.clef.app_secret
  		code: code
 
+ 	console.log form
+
  	request.post 
  		url: 'https://clef.io/api/v1/authorize'
  		form: form
