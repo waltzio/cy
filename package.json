@@ -1,7 +1,7 @@
 {
   "name": "Cydoemus",
   "description": "Generates Random Reusable Keys",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "dependencies": {
     "simple-api": "~0.1",
