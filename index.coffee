@@ -31,7 +31,7 @@ kickoff = () ->
 			require "#{__dirname}/api/v0/models/keys.coffee"
 			require "#{__dirname}/api/v0/models/users.coffee"
 
-			console.log "#{configs.name} now running at #{configs.host}:#{configs.port}"
+			console.log "#{configs.name} is now running at #{configs.host}:#{configs.port}"
 		else if err & kickoffTries < 5
 			console.log "Mongoose didn't work.  That's a bummer.  Let's try it again in half a second"
 			setTimeout () ->
