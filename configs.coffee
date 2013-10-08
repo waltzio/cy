@@ -1,4 +1,5 @@
 # If no env, set to local
+console.log(process.env);
 if not process.env?.application_env
 	process.env.application_env = "local"
 
