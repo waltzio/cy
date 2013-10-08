@@ -22,7 +22,7 @@ switch process.env.application_env
 		configs.cache = true
 		configs.mongoURL = process.env.MONGOLAB_URI
 		configs.url = "http://www.vault.tk"
-		configs.port = "80"
+		configs.port = process.env.port || "80"
 		configs.host = 'www.vault.tk'
 		configs.clef =
 			app_id: process.env.CLEF_APP_ID
