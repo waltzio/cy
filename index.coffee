@@ -124,7 +124,7 @@ handleClefCallback = (req, res) ->
  	, (err, resp, body) ->
  		clefResponse = JSON.parse body
  		if err or not clefResponse.access_token?
- 			console.log "Error getting CLEF access token", err
+ 			console.log "Error getting CLEF access token", err, clefResponse
  			v0.responses.notAuth res
  		else
  			req.$session.clefAccessToken = JSON.parse(body)['access_token']
