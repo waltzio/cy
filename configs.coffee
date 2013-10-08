@@ -22,9 +22,9 @@ switch process.env.application_env
 	when "production"
 		configs.cache = true
 		configs.mongoURL = process.env.MONGOLAB_URI
-		configs.url = "http://www.vault.tk"
+		configs.url = "http://cydoemus.vault.tk"
 		configs.port = process.env.PORT || "80"
-		configs.host = 'www.vault.tk'
+		configs.host = 'cydoemus.vault.tk'
 		configs.clef =
 			app_id: process.env.CLEF_APP_ID
 			app_secret: process.env.CLEF_APP_SECRET
