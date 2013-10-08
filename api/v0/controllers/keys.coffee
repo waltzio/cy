@@ -25,7 +25,7 @@ KeysController =
 								@responses.internalError res, "Error generating key.  This probably isn't your fault."
 							else 
 								console.log "Key generated.  Persisting"
-								Keys.createUserKeyWithIdentifier req.$session.user, params.identifier, key, (err, keyObj) ->
+								Keys.createUserKeyWithIdentifier req.$session.user, params.identifier, key, (err, keyObj) =>
 									if err
 										@responses.internalError res, "Your key didn't exist, so we tried to create a new one.  We got an error.  It probably wasn't your fault."
 									else
