@@ -24,7 +24,7 @@ switch process.env.application_env
 		configs.mongoURL = process.env.MONGOLAB_URI
 		configs.url = "http://cydoemus.vault.tk"
 		configs.port = process.env.PORT || "80"
-		configs.host = 'cydoemus.vault.tk'
+		configs.host = null
 		configs.clef =
 			app_id: process.env.CLEF_APP_ID
 			app_secret: process.env.CLEF_APP_SECRET
