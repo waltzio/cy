@@ -17,7 +17,7 @@ kickoff = () ->
 			#Create API Server
 			v0 = new api
 				prefix: ["api", "v0"]
-				host: configs.host
+				host: null
 				port: configs.port
 				before: prepareAPIRequest
 				fallback: apiFallback
