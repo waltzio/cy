@@ -95,6 +95,7 @@ handleClefLogout = (req, res) ->
 	 				for sess in session.sessions
 	 					if sess.user.identifier == userInfo.info.id
 	 						sess.user = false
+	 						v0.response.respond res
 
 handleBrowserLogout = (req, res) ->
 	if req.$session
