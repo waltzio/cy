@@ -57,6 +57,8 @@ apiFallback = (req, res) ->
 				v0.responses.respond res, data.replace "{{host}}", configs.host
 	else if urlParts.pathname == "/clefCallback"
 		handleClefCallback req, res
+	else if urlParts.pathname == "/clefLogout"
+		handleClefLogout req, res
 	else if urlParts.pathname == "/logout"
 		handleBrowserLogout req, res
 	else if urlParts.pathname == "/check"
