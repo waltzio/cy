@@ -5,6 +5,7 @@ api = require 'simple-api'
 fs = require 'fs'
 url = require 'url'
 request = require 'request'
+formidable = require 'formidable'
 
 v0 = null
 kickoffTries = 0
@@ -32,7 +33,7 @@ kickoff = () ->
 			require "#{__dirname}/api/v0/models/users.coffee"
 
 			console.log "#{configs.name} is now running at #{configs.host}:#{configs.port}"
-		else if err & kickoffTries < 5
+		else if err & kickoffTries < 20
 			console.log "Mongoose didn't work.  That's a bummer.  Let's try it again in half a second"
 			setTimeout () ->
 				kickoff()
@@ -68,38 +69,30 @@ apiFallback = (req, res) ->
 
 handleClefLogout = (req, res) ->
 	urlParts = url.parse req.url, true 
-	form = 
- 		app_id: configs.clef.app_id
- 		app_secret: configs.clef.app_secret
- 		logout_token: req.body.logout_token
 
- 	console.log "1"
- 	request.post 
- 		url: 'https://clef.io/api/v1/logout'
- 		form: form
- 	, (err, resp, body) ->
- 		clefResponse = JSON.parse body
- 		console.log clefResponse
- 		if err or not clefResponse.access_token?
- 			console.log "Error getting CLEF access token", err, clefResponse
- 			v0.responses.notAuth res
- 		else
- 			req.$session.clefAccessToken = JSON.parse(body)['access_token']
+	form = new formidable.IncomingForm
 
-	 		request.get "https://clef.io/api/v1/info?access_token=#{req.$session.clefAccessToken}", (err, resp, body) ->
-	 			userInfo = JSON.parse body
+	form.parse req, (err, fields, files) ->
+		data = 
+	 		app_id: configs.clef.app_id
+	 		app_secret: configs.clef.app_secret
+	 		logout_token: fields.logout_token
 
-	 			console.log userInfo
+	 	request.post 
+	 		url: 'https://clef.io/api/v1/logout'
+	 		form: data
+	 		(err, resp, body) ->
+		 		userInfo = JSON.parse body
 
 	 			if err or !userInfo.success? or !userInfo.success
 	 				console.log "Error getting clef user info", err
 	 				v0.responses.notAuth res
 	 			else	
-	 				console.log session.sessions
 	 				for sess in session.sessions
-	 					if sess.user.identifier == userInfo.info.id
+	 					if sess.user.identifier == userInfo.clef_id
 	 						sess.user = false
-	 						v0.response.respond res
+
+	 				v0.responses.respond res
 
 handleBrowserLogout = (req, res) ->
 	if req.$session
