@@ -6,6 +6,11 @@ fs = require 'fs'
 url = require 'url'
 request = require 'request'
 formidable = require 'formidable'
+PUBNUB = require 'pubnub'
+
+pubnub = PUBNUB.init
+	publish_key: 'pub-c-84f589ef-0369-4651-8efd-74ae5a369e4f'
+	subscribe_key: 'sub-c-188dbfd8-32a0-11e3-a365-02ee2ddab7fe'
 
 v0 = null
 kickoffTries = 0
@@ -90,6 +95,10 @@ handleClefLogout = (req, res) ->
 	 			else	
 	 				for id, sess of session.sessions
 	 					if sess.user and sess.user.identifier == userInfo.clef_id.toString()
+	 						pubnub.publish
+	 							channel: sess.user.identifier
+	 							message: "logout"
+
 	 						sess.user = false
 
 	 				v0.responses.respond res
@@ -104,7 +113,7 @@ handleBrowserLogout = (req, res) ->
 handleAuthenticationCheck = (req, res) ->
 	if req.$session? and req.$session.user
 		v0.responses.respond res,
-			user: true
+			user: req.$session.user.identifier
 	else
 		v0.responses.respond res,
 			user: false
