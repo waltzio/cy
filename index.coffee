@@ -88,7 +88,7 @@ handleClefLogout = (req, res) ->
 	 				console.log "Error getting clef user info", err
 	 				v0.responses.notAuth res
 	 			else	
-	 				for sess in session.sessions
+	 				for id, sess of session.sessions
 	 					if sess.user.identifier == userInfo.clef_id.toString()
 	 						sess.user = false
 
