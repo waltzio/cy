@@ -73,11 +73,13 @@ handleClefLogout = (req, res) ->
  		app_secret: configs.clef.app_secret
  		logout_token: req.body.logout_token
 
+ 	console.log "1"
  	request.post 
  		url: 'https://clef.io/api/v1/logout'
  		form: form
  	, (err, resp, body) ->
  		clefResponse = JSON.parse body
+ 		console.log clefResponse
  		if err or not clefResponse.access_token?
  			console.log "Error getting CLEF access token", err, clefResponse
  			v0.responses.notAuth res
@@ -87,10 +89,13 @@ handleClefLogout = (req, res) ->
 	 		request.get "https://clef.io/api/v1/info?access_token=#{req.$session.clefAccessToken}", (err, resp, body) ->
 	 			userInfo = JSON.parse body
 
+	 			console.log userInfo
+
 	 			if err or !userInfo.success? or !userInfo.success
 	 				console.log "Error getting clef user info", err
 	 				v0.responses.notAuth res
 	 			else	
+	 				console.log session.sessions
 	 				for sess in session.sessions
 	 					if sess.user.identifier == userInfo.info.id
 	 						sess.user = false
@@ -119,8 +124,6 @@ handleClefCallback = (req, res) ->
  		app_id: configs.clef.app_id
  		app_secret: configs.clef.app_secret
  		code: code
-
- 	console.log form
 
  	request.post 
  		url: 'https://clef.io/api/v1/authorize'
