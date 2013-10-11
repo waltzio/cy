@@ -67,12 +67,11 @@ apiFallback = (req, res) ->
 		v0.responses.notAvailable res
 
 handleClefLogout = (req, res) ->
-	urlParts = url.parse req.url, true
-	code = urlParts.query.code
+	urlParts = url.parse req.url, true 
 	form = 
  		app_id: configs.clef.app_id
  		app_secret: configs.clef.app_secret
- 		code: code
+ 		logout_token: req.body.logout_token
 
  	request.post 
  		url: 'https://clef.io/api/v1/logout'
