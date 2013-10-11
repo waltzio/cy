@@ -89,7 +89,7 @@ handleClefLogout = (req, res) ->
 	 				v0.responses.notAuth res
 	 			else	
 	 				for sess in session.sessions
-	 					if sess.user.identifier == userInfo.clef_id
+	 					if sess.user.identifier == userInfo.clef_id.toString()
 	 						sess.user = false
 
 	 				v0.responses.respond res
