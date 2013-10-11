@@ -3,7 +3,7 @@
 	<title>Cydoemus Login</title>
 </head>
 <body>
-<div id="settings" data-app-id="775da2c4142900d03bf3fca4cb13f93e" data-redirect-url="https://{{host}}/clefCallback"></div>
+<div id="settings" data-app-id="775da2c4142900d03bf3fca4cb13f93e" data-redirect-url="{{url}}/clefCallback"></div>
 <script type="text/javascript" src="https://clef.io/v2/clef.js"></script>
 <script>
      var button = new ClefButton({
@@ -14,5 +14,15 @@
      button.body = document.body;
      button.buttonFrame = {};
      button.overlayOpen();
+
+     window.addEventListener('message', function(e) {
+        if (e.origin == 'https://clef.io') {
+            if (e.data && e.data.method == "overlayClose") {
+                parent.postMessage({
+                    method: "closeIFrame"
+                }, '*');
+            }
+        }
+     })
 </script>
 </head>

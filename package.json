@@ -10,6 +10,9 @@
     "request": "~2.27.0",
     "formidable": "~1.0.14"
   },
+  "devDependencies": {
+    "supervisor": "~0.5.6"
+  },
   "engines": {
     "node": "0.10",
     "npm": "1.1.x"
