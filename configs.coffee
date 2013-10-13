@@ -3,13 +3,13 @@ if not process.env?.application_env
 	process.env.application_env = "local"
 
 configs = {
-	name: "Cydoemus"
+	name: "Cy"
 }
 
 
 switch process.env.application_env
 	when "local"
-		configs.mongoURL = "mongodb://localhost/cydoemus"
+		configs.mongoURL = "mongodb://localhost/cy"
 		configs.host = "localhost"
 		configs.port = "3333"
 		configs.url = "http://localhost:3333"

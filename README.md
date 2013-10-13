@@ -1,4 +1,4 @@
-cydoemus
+cy
 ========
 
 Generates Cryptographically Secure Reusable Keys
@@ -15,7 +15,7 @@ Generates Cryptographically Secure Reusable Keys
 
 ## The Actual Server
 1. Check it out  
-`git clone git@github.com:josephwegner/cydoemus.git`
+`git clone git@github.com:josephwegner/cy.git`
 
 2. Get in there  
 `cd cydoemus`
