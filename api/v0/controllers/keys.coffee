@@ -29,7 +29,8 @@ KeysController =
 									if err
 										@responses.internalError res, "Your key didn't exist, so we tried to create a new one.  We got an error.  It probably wasn't your fault."
 									else
-										@responses.respond res, keyObj
+										@responses.respond res, 
+											key: keyObj
 
 					else
 						#Woot woot!  Key already exists!
