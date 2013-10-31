@@ -10,8 +10,7 @@
     "request": "~2.27.0",
     "formidable": "~1.0.14",
     "pubnub": "~3.5.45",
-    "client-sessions": "~0.3.1",
-    "node-gyp": "*"
+    "connect": "~2.11.0"
   },
   "devDependencies": {
     "supervisor": "~0.5.6"

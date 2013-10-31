@@ -9,12 +9,12 @@ KeysController =
 
 	actions:
 		getKey: (req, res, params) ->
-			if !req.$session.user? or !req.$session.user
+			if !req.session.user? or !req.session.user
 				@responses.notAuth res
 			else
 				Keys = mongoose.model "Keys"
 
-				Keys.getUserKeyWithIdentifier req.$session.user, params.identifier, (err, key) =>
+				Keys.getUserKeyWithIdentifier req.session.user, params.identifier, (err, key) =>
 					if err
 						@responses.internalError res, "Error retrieving your key.  This probably isn't your fault"
 					else if !key.length
@@ -25,7 +25,7 @@ KeysController =
 								@responses.internalError res, "Error generating key.  This probably isn't your fault."
 							else 
 								console.log "Key generated.  Persisting"
-								Keys.createUserKeyWithIdentifier req.$session.user, params.identifier, key, (err, keyObj) =>
+								Keys.createUserKeyWithIdentifier req.session.user, params.identifier, key, (err, keyObj) =>
 									if err
 										@responses.internalError res, "Your key didn't exist, so we tried to create a new one.  We got an error.  It probably wasn't your fault."
 									else

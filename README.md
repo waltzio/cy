@@ -46,12 +46,12 @@ Install dokku
     jesse@remote: touch /home/dokku/VHOST
     jesse@remote: echo <your_domain_name> > /home/dokku/VHOST
 
-    jesse@local: cat ~/.ssh/id_rsa.pub| ssh user@<your_domain_name> "sudo gitreceive upload-key username"
+    jesse@local: cat ~/.ssh/id_rsa.pub| ssh user@<your_domain_name> "sudo sshcommand acl-add dokku <your_name>"
     jesse@local: git clone https://github.com/waltzio/cy
-    jesse@local: git remote add deploy git@<your_domain_name>:cy
+    jesse@local: git remote add deploy dokku@<your_domain_name>:cy
 
-    jesse@remote: mkdir /home/git/cy
-    jesse@remote: vi /home/git/cy/ENV
+    jesse@remote: mkdir /home/dokku/cy
+    jesse@remote: vi /home/dokku/cy/ENV
 
         export CLEF_APP_ID=<YOUR_CLEF_APP_ID>
         export CLEF_APP_SECRET=<YOUR_CLEF_APP_SECRET>
@@ -62,7 +62,7 @@ Install dokku
         export HOST=<URL_MINUS_PROTOCAL_AND_PORT>
 
 
-    jesse@remote: cd /home/git/cy
+    jesse@remote: cd /home/dokku/cy
     jesse@remote: mkdir ssl
     jesse@remote: touch server.crt (add actual SSL certificate)
     jesse@remote: touch server.key (add actual SSL private key)

@@ -1,6 +1,6 @@
 global.configs = require './configs'
 global.mongoose = require 'mongoose'
-sessions = require 'client-sessions'
+session = require './lib/session'
 api = require 'simple-api'
 fs = require 'fs'
 url = require 'url'
@@ -15,10 +15,10 @@ pubnub = PUBNUB.init
 v0 = null
 kickoffTries = 0
 
-session = sessions
-	cookieName: "$session"
+session = session
 	secret: configs.secret_key
-	duration: 365 * 24 * 60 * 60 * 1000
+	cookie: 
+		maxAge: 365 * 24 * 60 * 60 * 1000
 
 kickoff = () ->
 	kickoffTries++
@@ -36,7 +36,6 @@ kickoff = () ->
 
 			oldRespond = v0.responses.respond
 			v0.responses.respond = (res, message, statusCode) ->
-				res.emit 'header'
 				oldRespond res, message, statusCode
 
 
@@ -117,16 +116,16 @@ handleClefLogout = (req, res) ->
 	 				v0.responses.respond res
 
 handleBrowserLogout = (req, res) ->
-	if req.$session
-		req.$session.user = false
+	if req.session
+		req.session.user = false
 
 	v0.responses.respond res
 
 
 handleAuthenticationCheck = (req, res) ->
-	if req.$session? and req.$session.user
+	if req.session? and req.session.user
 		v0.responses.respond res,
-			user: req.$session.user.identifier
+			user: req.session.user.identifier
 	else
 		v0.responses.respond res,
 			user: false
@@ -149,9 +148,9 @@ handleClefCallback = (req, res) ->
  			console.log "Error getting CLEF access token", err, clefResponse
  			v0.responses.notAuth res
  		else
- 			req.$session.clefAccessToken = JSON.parse(body)['access_token']
+ 			req.session.clefAccessToken = JSON.parse(body)['access_token']
 
-	 		request.get "https://clef.io/api/v1/info?access_token=#{req.$session.clefAccessToken}", (err, resp, body) ->
+	 		request.get "https://clef.io/api/v1/info?access_token=#{req.session.clefAccessToken}", (err, resp, body) ->
 	 			userInfo = JSON.parse body
 
 	 			if err or !userInfo.success? or !userInfo.success
@@ -170,11 +169,11 @@ handleClefCallback = (req, res) ->
 	 								v0.responses.internalError res, "Error creating user.  This probably isn't your fault.  Try again."
 	 							else
 	 								#New user created!  Woohoo!
-	 								req.$session.user = newUser
+	 								req.session.user = newUser
 	 								v0.responses.respond res
 	 					else
 	 						#user already exists.  Let's use that.
-	 						req.$session.user = existingUser[0]
+	 						req.session.user = existingUser[0]
 	 						v0.responses.respond res, "<script type='text/javascript'>addEventListener('message', function(e) { e.source.postMessage({auth: true}, e.origin); });</script>"
 
 
