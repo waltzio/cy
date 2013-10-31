@@ -41,12 +41,10 @@ Boot up an instance with Ubuntu 13.04 x64
 SSH in to your brand new server
 Install dokku
 
-    jesse@remote: wget -qO- \
-   https://raw.github.com/progrium/dokku/master/bootstrap.sh \
- | sudo bash
+    jesse@remote: wget -qO- https://raw.github.com/progrium/dokku/master/bootstrap.sh | sudo bash
 
-    jesse@remote: touch /home/git/VHOST
-    jesse@remote: echo <your_domain_name> > /home/git/VHOST
+    jesse@remote: touch /home/dokku/VHOST
+    jesse@remote: echo <your_domain_name> > /home/dokku/VHOST
 
     jesse@local: cat ~/.ssh/id_rsa.pub| ssh user@<your_domain_name> "sudo gitreceive upload-key username"
     jesse@local: git clone https://github.com/waltzio/cy
