@@ -1,6 +1,6 @@
 global.configs = require './configs'
 global.mongoose = require 'mongoose'
-session = require './lib/node-session'
+sessions = require 'client-sessions'
 api = require 'simple-api'
 fs = require 'fs'
 url = require 'url'
@@ -15,6 +15,11 @@ pubnub = PUBNUB.init
 v0 = null
 kickoffTries = 0
 
+session = sessions
+	cookieName: "$session"
+	secret: configs.secret_key
+	duration: 365 * 24 * 60 * 60 * 1000
+
 kickoff = () ->
 	kickoffTries++
 
@@ -28,6 +33,12 @@ kickoff = () ->
 				before: prepareAPIRequest
 				fallback: apiFallback
 				logLevel: 5
+
+			oldRespond = v0.responses.respond
+			v0.responses.respond = (res, message, statusCode) ->
+				res.emit 'header'
+				oldRespond res, message, statusCode
+
 
 			#Load Controllers
 			v0.Controller "keys", require "#{__dirname}/api/v0/controllers/keys.coffee"
@@ -47,11 +58,10 @@ kickoff = () ->
 			console.log "Mongo server seems to really be down.  We tried 5 times.  Tough luck."
 
 prepareAPIRequest = (req, res, controller) ->
-	req.$session = session.start res, req
+	session req, res, () ->
 
 apiFallback = (req, res) ->
-	req.$session = session.start res, req
-	#req.$session.user = 12345 #Fake the user for offline testing
+	session req, res, () ->
 	
 	urlParts = url.parse req.url, true
 
