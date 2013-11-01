@@ -52,7 +52,7 @@ kickoff = () ->
 			console.log "Mongoose didn't work.  That's a bummer.  Let's try it again in half a second"
 			setTimeout () ->
 				kickoff()
-			, 500
+			, 1000
 		else if err
 			console.log "Mongo server seems to really be down.  We tried 5 times.  Tough luck."
 
@@ -104,28 +104,44 @@ handleClefLogout = (req, res) ->
 	 			if err or !userInfo.success? or !userInfo.success
 	 				console.log "Error getting clef user info", err
 	 				v0.responses.notAuth res
-	 			else	
-	 				for id, sess of session.sessions
-	 					if sess.user and sess.user.identifier == userInfo.clef_id.toString()
-	 						pubnub.publish
-	 							channel: sess.user.identifier
-	 							message: "logout"
+	 			else
+	 				Users = mongoose.model "Users"
 
-	 						sess.user = false
+	 				Users.getByIdentifier userInfo.clef_id.toString(), (err, existingUser) ->
+	 					if err or !existingUser.length
+	 						v0.responses.internalError res, "Error finding your user.  This probably isn't your fault.  Try again."
+	 					else
+	 						user = existingUser[0]
+	 						user.logged_out_at = Date.now
 
-	 				v0.responses.respond res
+	 						user.save () ->
+	 							v0.responses.respond res
 
 handleBrowserLogout = (req, res) ->
 	if req.session
-		req.session.user = false
+		req.session = {}
 
 	v0.responses.respond res
 
 
 handleAuthenticationCheck = (req, res) ->
+
 	if req.session? and req.session.user
-		v0.responses.respond res,
-			user: req.session.user.identifier
+		Users = mongoose.model "Users"
+
+		Users.getByIdentifier req.session.user.identifier, (err, existingUser) ->
+			if err or !existingUser.length
+				v0.responses.respond res,
+					user: false
+			else
+				user = existingUser[0]
+				if user.logged_out_at > req.session.logged_in_at
+					req.session = {}
+					v0.responses.respond res,
+						user: false
+				else
+					v0.responses.respond res,
+						user: req.session.user.identifier
 	else
 		v0.responses.respond res,
 			user: false
@@ -169,10 +185,12 @@ handleClefCallback = (req, res) ->
 	 								v0.responses.internalError res, "Error creating user.  This probably isn't your fault.  Try again."
 	 							else
 	 								#New user created!  Woohoo!
+	 								req.session.logged_in_at = Date.now()
 	 								req.session.user = newUser
 	 								v0.responses.respond res
 	 					else
 	 						#user already exists.  Let's use that.
+	 						req.session.logged_in_at = Date.now()
 	 						req.session.user = existingUser[0]
 	 						v0.responses.respond res, "<script type='text/javascript'>addEventListener('message', function(e) { e.source.postMessage({auth: true}, e.origin); });</script>"
 
