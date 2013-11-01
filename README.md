@@ -49,8 +49,8 @@ Install dokku
     jesse@local: cat ~/.ssh/id_rsa.pub| ssh user@<your_domain_name> "sudo sshcommand acl-add dokku <your_name>"
     jesse@local: git clone https://github.com/waltzio/cy
     jesse@local: git remote add deploy dokku@<your_domain_name>:cy
+    jesse@local: git push deploy master
 
-    jesse@remote: mkdir /home/dokku/cy
     jesse@remote: vi /home/dokku/cy/ENV
 
         export CLEF_APP_ID=<YOUR_CLEF_APP_ID>
@@ -61,12 +61,13 @@ Install dokku
         export URL=<URL_OF_APP>
         export HOST=<URL_MINUS_PROTOCAL_AND_PORT>
 
-
     jesse@remote: cd /home/dokku/cy
     jesse@remote: mkdir ssl
     jesse@remote: touch server.crt (add actual SSL certificate)
     jesse@remote: touch server.key (add actual SSL private key)
 
+    jesse@local: git commit --allow-empty -m "sets up environment variables and ssl"
     jesse@local: git push deploy master
+
 
 Go to [http://localhost:3333/api/v0/keys](http://localhost:3333/api/v0/keys)
