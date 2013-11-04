@@ -1,5 +1,8 @@
 usersSchema = mongoose.Schema
 	identifier: String
+	logged_out_at:
+		type: Number
+		default: Date.now
 	created_at:
 		type: Date
 		default: Date.now
