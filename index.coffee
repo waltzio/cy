@@ -119,7 +119,7 @@ handleClefLogout = (req, res) ->
 				                   channel: user.identifier
 				                   message: "logout"
 
-	 							v0.responses.response res
+	 							v0.responses.respond res
 
 handleBrowserLogout = (req, res) ->
 	if req.session
