@@ -107,15 +107,14 @@ handleClefLogout = (req, res) ->
 	 			else
 	 				Users = mongoose.model "Users"
 
-	 				Users.getByIdentifier userInfo.clef_id.toString(), (err, existingUser) ->
+	 				Users.getByIdentifier userInfo.clef_id, (err, existingUser) ->
 	 					if err or !existingUser.length
 	 						v0.responses.internalError res, "Error finding your user.  This probably isn't your fault.  Try again."
 	 					else
 	 						user = existingUser[0]
-	 						user.logged_out_at = Date.now
-
+	 						user.logged_out_at = Date.now()
 	 						user.save () ->
-	 							v0.responses.respond res
+	 							v0.responses.response res
 
 handleBrowserLogout = (req, res) ->
 	if req.session
