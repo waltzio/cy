@@ -25,7 +25,7 @@ KeysController =
 							req.session = {}
 							@responses.notAuth res
 						else
-							Keys.getUserKeyWithIdentifier user, user.identifier, (err, key) =>
+							Keys.getUserKeyWithIdentifier user, params.identifier, (err, key) =>
 								if err
 									@responses.internalError res, "Error retrieving your key.  This probably isn't your fault"
 								else if !key.length
