@@ -113,7 +113,12 @@ handleClefLogout = (req, res) ->
 	 					else
 	 						user = existingUser[0]
 	 						user.logged_out_at = Date.now()
+	 						
 	 						user.save () ->
+	 							pubnub.publish
+				                   channel: user.identifier
+				                   message: "logout"
+
 	 							v0.responses.response res
 
 handleBrowserLogout = (req, res) ->
