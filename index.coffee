@@ -113,7 +113,7 @@ handleClefLogout = (req, res) ->
 	 					else
 	 						user = existingUser[0]
 	 						user.logged_out_at = Date.now()
-	 						
+	 						 
 	 						user.save () ->
 	 							pubnub.publish
 				                   channel: user.identifier
