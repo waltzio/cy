@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>Waltz Login</title>
+    <title>Waltz Login</title>
 </head>
 <body>
 <div id="settings" data-app-id="{{app_id}}" data-redirect-url="{{url}}/clefCallback"></div>
@@ -13,7 +13,6 @@
     // by not rendering the button
     button.body = document.body;
     button.buttonFrame = {};
-    button.overlayOpen();
 
     window.addEventListener('message', function(e) {
         if (e.origin == 'https://clef.io') {
@@ -22,6 +21,9 @@
                     method: "closeIFrame"
                 }, '*');
             }
+        }
+        if (e.data && e.data.method == "loadClef") {
+            button.overlayOpen();
         }
     });
 </script>

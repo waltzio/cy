@@ -73,6 +73,15 @@ apiFallback = (req, res) ->
 				template = template.replace "{{url}}", configs.url
 				template = template.replace "{{app_id}}", configs.clef.app_id
 				v0.responses.respond res, template
+	else if urlParts.pathname == "/v1/login"
+		fs.readFile './views/v1/login.html', 'utf8', (err, data) ->
+			if err
+				v0.responses.internalError res
+			else
+				template = data
+				template = template.replace "{{url}}", configs.url
+				template = template.replace "{{app_id}}", configs.clef.app_id
+				v0.responses.respond res, template
 	else if urlParts.pathname == "/clefCallback"
 		handleClefCallback req, res
 	else if urlParts.pathname == "/clefLogout"
