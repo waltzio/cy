@@ -6,16 +6,16 @@
 <div id="settings" data-app-id="{{app_id}}" data-redirect-url="{{url}}/clefCallback"></div>
 <script type="text/javascript" src="https://clef.io/v3/clef.js"></script>
 <script>
-     var button = new ClefButton({
+    var button = new ClefButton({
         el: settings
-     });
-     // just doing some filling stuff that we skip 
-     // by not rendering the button
-     button.body = document.body;
-     button.buttonFrame = {};
+    });
+    // just doing some filling stuff that we skip 
+    // by not rendering the button
+    button.body = document.body;
+    button.buttonFrame = {};
     button.overlayOpen();
 
-     window.addEventListener('message', function(e) {
+    window.addEventListener('message', function(e) {
         if (e.origin == 'https://clef.io') {
             if (e.data && e.data.method == "overlayClose") {
                 parent.postMessage({
@@ -23,6 +23,6 @@
                 }, '*');
             }
         }
-     })
+    });
 </script>
 </head>
