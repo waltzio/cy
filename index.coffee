@@ -60,38 +60,45 @@ prepareAPIRequest = (req, res, controller) ->
 	session req, res, () ->
 
 apiFallback = (req, res) ->
-	session req, res, () ->
-	
-	urlParts = url.parse req.url, true
+	try
+		session req, res, () ->
 
-	if urlParts.pathname == "/login"
-		fs.readFile './views/login.html', 'utf8', (err, data) ->
-			if err
-				v0.responses.internalError res
-			else
-				template = data
-				template = template.replace "{{url}}", configs.url
-				template = template.replace "{{app_id}}", configs.clef.app_id
-				v0.responses.respond res, template
-	else if urlParts.pathname == "/v1/login"
-		fs.readFile './views/v1/login.html', 'utf8', (err, data) ->
-			if err
-				v0.responses.internalError res
-			else
-				template = data
-				template = template.replace "{{url}}", configs.url
-				template = template.replace "{{app_id}}", configs.clef.app_id
-				v0.responses.respond res, template
-	else if urlParts.pathname == "/clefCallback"
-		handleClefCallback req, res
-	else if urlParts.pathname == "/clefLogout"
-		handleClefLogout req, res
-	else if urlParts.pathname == "/logout"
-		handleBrowserLogout req, res
-	else if urlParts.pathname == "/check"
-		handleAuthenticationCheck req, res
-	else
-		v0.responses.notAvailable res
+		urlParts = url.parse req.url, true
+
+		if urlParts.pathname == "/login"
+			fs.readFile './views/login.html', 'utf8', (err, data) ->
+				if err
+					v0.responses.internalError res
+				else
+					template = data
+					template = template.replace "{{url}}", configs.url
+					template = template.replace "{{app_id}}", configs.clef.app_id
+					v0.responses.respond res, template
+		else if urlParts.pathname == "/v1/login"
+			fs.readFile './views/v1/login.html', 'utf8', (err, data) ->
+				if err
+					v0.responses.internalError res
+				else
+					template = data
+					template = template.replace "{{url}}", configs.url
+					template = template.replace "{{app_id}}", configs.clef.app_id
+					v0.responses.respond res, template
+		else if urlParts.pathname == "/clefCallback"
+			handleClefCallback req, res
+		else if urlParts.pathname == "/clefLogout"
+			handleClefLogout req, res
+		else if urlParts.pathname == "/logout"
+			handleBrowserLogout req, res
+		else if urlParts.pathname == "/check"
+			handleAuthenticationCheck req, res
+		else
+			v0.responses.notAvailable res
+
+
+	catch error
+		v0.responses.internalError res
+		console.log "API Fallback error!"
+		console.log error
 
 handleClefLogout = (req, res) ->
 	urlParts = url.parse req.url, true 
@@ -108,27 +115,37 @@ handleClefLogout = (req, res) ->
 	 		url: 'https://clef.io/api/v1/logout'
 	 		form: data
 	 		(err, resp, body) ->
-		 		userInfo = JSON.parse body
+	 			try
+			 		userInfo = JSON.parse body
 
-	 			if err or !userInfo.success? or !userInfo.success
-	 				console.log "Error getting clef user info", err
-	 				v0.responses.notAuth res
-	 			else
-	 				Users = mongoose.model "Users"
+		 			if err or !userInfo.success? or !userInfo.success
+		 				console.log "Error getting clef user info", err
+		 				v0.responses.notAuth res
+		 			else
+		 				Users = mongoose.model "Users"
 
-	 				Users.getByIdentifier userInfo.clef_id, (err, existingUser) ->
-	 					if err or !existingUser.length
-	 						v0.responses.internalError res, "Error finding your user.  This probably isn't your fault.  Try again."
-	 					else
-	 						user = existingUser[0]
-	 						user.logged_out_at = Date.now()
-	 						 
-	 						user.save () ->
-	 							pubnub.publish
-				                   channel: user.identifier
-				                   message: "logout"
+		 				Users.getByIdentifier userInfo.clef_id, (err, existingUser) ->
+		 					try
+			 					if err or !existingUser.length
+			 						v0.responses.internalError res, "Error finding your user.  This probably isn't your fault.  Try again."
+			 					else
+			 						user = existingUser[0]
+			 						user.logged_out_at = Date.now()
+			 						 
+			 						user.save () ->
+			 							pubnub.publish
+						                   channel: user.identifier
+						                   message: "logout"
 
-	 							v0.responses.respond res
+			 							v0.responses.respond res
+		 					catch error
+		 						v0.responses.internalError res
+		 						console.log "Error logging user out of Cy"
+		 						console.log error
+		 		catch error
+		 			v0.responses.internalError res
+		 			console.log "Error handling response from Clef logout!"
+		 			console.log error
 
 handleBrowserLogout = (req, res) ->
 	if req.session
@@ -138,74 +155,99 @@ handleBrowserLogout = (req, res) ->
 
 
 handleAuthenticationCheck = (req, res) ->
+	try
+		if req.session? and req.session.user
+			Users = mongoose.model "Users"
 
-	if req.session? and req.session.user
-		Users = mongoose.model "Users"
-
-		Users.getByIdentifier req.session.user.identifier, (err, existingUser) ->
-			if err or !existingUser.length
-				v0.responses.respond res,
-					user: false
-			else
-				user = existingUser[0]
-				if user.logged_out_at > req.session.logged_in_at
-					req.session = {}
-					v0.responses.respond res,
-						user: false
-				else
-					v0.responses.respond res,
-						user: req.session.user.identifier
-	else
-		v0.responses.respond res,
-			user: false
+			Users.getByIdentifier req.session.user.identifier, (err, existingUser) ->
+				try
+					if err or !existingUser.length
+						v0.responses.respond res,
+							user: false
+					else
+						user = existingUser[0]
+						if user.logged_out_at > req.session.logged_in_at
+							req.session = {}
+							v0.responses.respond res,
+								user: false
+						else
+							v0.responses.respond res,
+								user: req.session.user.identifier
+				catch error
+					v0.responses.internalError res, "Error checking your user's session.  This probably isn't your fault."
+					console.log "Error checking user's current session!"
+					console.log error
+		else
+			v0.responses.respond res,
+				user: false
+	catch error
+		v0.responses.internalError res
+		console.log "Error handling authentication check!"
+		console.log error
 
 
 handleClefCallback = (req, res) ->
-	urlParts = url.parse req.url, true
-	code = urlParts.query.code
-	form = 
- 		app_id: configs.clef.app_id
- 		app_secret: configs.clef.app_secret
- 		code: code
+	try
+		urlParts = url.parse req.url, true
+		code = urlParts.query.code
+		form = 
+			app_id: configs.clef.app_id
+			app_secret: configs.clef.app_secret
+			code: code
 
- 	request.post 
- 		url: 'https://clef.io/api/v1/authorize'
- 		form: form
- 	, (err, resp, body) ->
- 		clefResponse = JSON.parse body
- 		if err or not clefResponse.access_token?
- 			console.log "Error getting CLEF access token", err, clefResponse
- 			v0.responses.notAuth res
- 		else
- 			req.session.clefAccessToken = JSON.parse(body)['access_token']
+		request.post 
+			url: 'https://clef.io/api/v1/authorize'
+			form: form
+		, (err, resp, body) ->
+			try
+				clefResponse = JSON.parse body
+				if err or not clefResponse.access_token?
+					console.log "Error getting CLEF access token", err, clefResponse
+					v0.responses.notAuth res
+				else
+					req.session.clefAccessToken = JSON.parse(body)['access_token']
 
-	 		request.get "https://clef.io/api/v1/info?access_token=#{req.session.clefAccessToken}", (err, resp, body) ->
-	 			userInfo = JSON.parse body
+					request.get "https://clef.io/api/v1/info?access_token=#{req.session.clefAccessToken}", (err, resp, body) ->
+						try
+							userInfo = JSON.parse body
 
-	 			if err or !userInfo.success? or !userInfo.success
-	 				console.log "Error getting clef user info", err
-	 				v0.responses.notAuth res
-	 			else
-	 				Users = mongoose.model "Users"
-	 				
-	 				Users.getByIdentifier userInfo.info.id, (err, existingUser) ->
-	 					if err
-	 						v0.responses.internalError res, "Error finding your user.  This probably isn't your fault.  Try again."
-	 					else if !existingUser.length
-	 						#User doesn't exist.  Let's create one!
-	 						Users.createWithIdentifier userInfo.info.id, (err, newUser) ->
-	 							if err
-	 								v0.responses.internalError res, "Error creating user.  This probably isn't your fault.  Try again."
-	 							else
-	 								#New user created!  Woohoo!
-	 								req.session.logged_in_at = Date.now()
-	 								req.session.user = newUser
-	 								v0.responses.respond res
-	 					else
-	 						#user already exists.  Let's use that.
-	 						req.session.logged_in_at = Date.now()
-	 						req.session.user = existingUser[0]
-	 						v0.responses.respond res, "<script type='text/javascript'>parent.postMessage({auth: true}, '*');</script>"
+							if err or !userInfo.success? or !userInfo.success
+								console.log "Error getting clef user info", err
+								v0.responses.notAuth res
+							else
+								Users = mongoose.model "Users"
+								
+								Users.getByIdentifier userInfo.info.id, (err, existingUser) ->
+									if err
+										v0.responses.internalError res, "Error finding your user.  This probably isn't your fault.  Try again."
+									else if !existingUser.length
+										#User doesn't exist.  Let's create one!
+										Users.createWithIdentifier userInfo.info.id, (err, newUser) ->
+											if err
+												v0.responses.internalError res, "Error creating user.  This probably isn't your fault.  Try again."
+											else
+												#New user created!  Woohoo!
+												req.session.logged_in_at = Date.now()
+												req.session.user = newUser
+												v0.responses.respond res
+									else
+										#user already exists.  Let's use that.
+										req.session.logged_in_at = Date.now()
+										req.session.user = existingUser[0]
+										v0.responses.respond res, "<script type='text/javascript'>addEventListener('message', function(e) { e.source.postMessage({auth: true}, e.origin); });</script>"
+						catch error
+							v0.response.internalError res, "Error getting user information from Clef. This probably isn't your fault."
+							console.log "Error parsing user response from Clef!"
+							console.log error
+			catch error
+				v0.responses.internalError res, "Error getting authentication from Clef.  This probaby isn't your fault."
+				console.log "Error parsing authentication response from Clef!"
+				console.log error
+	catch error
+		v0.responses.internalError res
+		console.log "Error handling Clef callback!"
+		console.log error
+
 
 
 
