@@ -13,7 +13,7 @@ keysSchema = mongoose.Schema
 
 keysSchema.static "getUserKeyWithIdentifier", (user, ident, cb) ->
 	this.find 
-		user: mongoose.Schema.ObjectId(user.id)
+		user: mongoose.Types.ObjectId(user.id)
 		identifier: ident
 	, (err, doc) ->
 			if err
@@ -28,7 +28,7 @@ keysSchema.static "getUserKeyWithIdentifier", (user, ident, cb) ->
 
 keysSchema.static "createUserKeyWithIdentifier", (user, ident, key, cb) ->
 	newKey = new Keys
-		user: user
+		user: user._id
 		identifier: ident
 		key: key
 
