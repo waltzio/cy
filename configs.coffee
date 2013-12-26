@@ -15,8 +15,8 @@ switch process.env.application_env
 		configs.url = "http://localhost:3333"
 		configs.cache = false
 		configs.clef =
-			app_id: '2cb640916f76717e3b29ce3a02cac3d5'
-			app_secret: 'a478a7ba6466973a731e0cf666ce5479'
+			app_id: '775da2c4142900d03bf3fca4cb13f93e'
+			app_secret: '7d577bf2fdb7b9d92283def6fd3e11fb'
 		configs.secret_key = "secret key"
 
 
