@@ -1,6 +1,8 @@
 cy
 ========
 
+Cy was built to be used with the [open source](http://github.com/waltzio/waltz) [password helper, Waltz](https://getwaltz.com).
+
 Generates Cryptographically Secure Reusable Keys
 
 # Install
