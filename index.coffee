@@ -17,7 +17,7 @@ kickoffTries = 0
 
 session = session
 	secret: configs.secret_key
-	cookie: 
+	cookie:
 		maxAge: 365 * 24 * 60 * 60 * 1000
 
 kickoff = () ->
@@ -32,7 +32,7 @@ kickoff = () ->
 				port: configs.port
 				before: prepareAPIRequest
 				fallback: apiFallback
-				logLevel: 0
+				logLevel: 5
 
 			oldRespond = v0.responses.respond
 			v0.responses.respond = (res, message, statusCode) ->
@@ -192,12 +192,12 @@ handleClefCallback = (req, res) ->
 	try
 		urlParts = url.parse req.url, true
 		code = urlParts.query.code
-		form = 
+		form =
 			app_id: configs.clef.app_id
 			app_secret: configs.clef.app_secret
 			code: code
 
-		request.post 
+		request.post
 			url: 'https://clef.io/api/v1/authorize'
 			form: form
 		, (err, resp, body) ->
@@ -218,7 +218,7 @@ handleClefCallback = (req, res) ->
 								v0.responses.notAuth res
 							else
 								Users = mongoose.model "Users"
-								
+
 								Users.getByIdentifier userInfo.info.id, (err, existingUser) ->
 									if err
 										v0.responses.internalError res, "Error finding your user.  This probably isn't your fault.  Try again."
