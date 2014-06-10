@@ -32,7 +32,7 @@ kickoff = () ->
 				port: configs.port
 				before: prepareAPIRequest
 				fallback: apiFallback
-				logLevel: 5
+				logLevel: 0
 
 			oldRespond = v0.responses.respond
 			v0.responses.respond = (res, message, statusCode) ->
