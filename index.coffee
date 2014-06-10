@@ -101,17 +101,18 @@ apiFallback = (req, res) ->
 		console.log error
 
 handleClefLogout = (req, res) ->
-	urlParts = url.parse req.url, true 
+	urlParts = url.parse req.url, true
 
 	form = new formidable.IncomingForm
 
 	form.parse req, (err, fields, files) ->
-		data = 
+		return console.log err if err
+		data =
 	 		app_id: configs.clef.app_id
 	 		app_secret: configs.clef.app_secret
 	 		logout_token: fields.logout_token
 
-	 	request.post 
+	 	request.post
 	 		url: 'https://clef.io/api/v1/logout'
 	 		form: data
 	 		(err, resp, body) ->
@@ -127,11 +128,12 @@ handleClefLogout = (req, res) ->
 		 				Users.getByIdentifier userInfo.clef_id, (err, existingUser) ->
 		 					try
 			 					if err or !existingUser.length
+			 						console.log "Error finding user with Clef ID #{userInfo.clef_id}", err
 			 						v0.responses.internalError res, "Error finding your user.  This probably isn't your fault.  Try again."
 			 					else
 			 						user = existingUser[0]
 			 						user.logged_out_at = Date.now()
-			 						 
+
 			 						user.save () ->
 			 							pubnub.publish
 						                   channel: user.identifier
