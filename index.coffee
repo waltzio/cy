@@ -105,17 +105,21 @@ handleClefLogout = (req, res) ->
 
 	form = new formidable.IncomingForm
 
+	console.log "Parsing logout request"
 	form.parse req, (err, fields, files) ->
 		return console.log err if err
+		console.log "Logout request parsed: #{fields}"
 		data =
 	 		app_id: configs.clef.app_id
 	 		app_secret: configs.clef.app_secret
 	 		logout_token: fields.logout_token
 
+	 	console.log "Attempting Clef logout request"
 	 	request.post
 	 		url: 'https://clef.io/api/v1/logout'
 	 		form: data
 	 		(err, resp, body) ->
+	 			console.log "Clef logout request recieved #{body}"
 	 			try
 			 		userInfo = JSON.parse body
 
@@ -135,6 +139,7 @@ handleClefLogout = (req, res) ->
 			 						user.logged_out_at = Date.now()
 
 			 						user.save () ->
+			 							console.log "User logged out"
 			 							pubnub.publish
 						                   channel: user.identifier
 						                   message: "logout"
