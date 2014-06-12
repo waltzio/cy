@@ -119,6 +119,11 @@ handleClefLogout = (req, res) ->
 	 		url: 'https://clef.io/api/v1/logout'
 	 		form: data
 	 		(err, resp, body) ->
+	 			if err
+	 				msg = "ERROR in clef logout request: #{err}"
+	 				console.log msg
+	 				return v0.response.internalError res, msg
+
 	 			console.log "Clef logout request recieved #{body}"
 	 			try
 			 		userInfo = JSON.parse body
