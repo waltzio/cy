@@ -7,10 +7,10 @@
     "simple-api": "~0.1.1",
     "mongoose": "~3.5",
     "coffee-script": "~1.6",
-    "request": "~2.27.0",
     "formidable": "~1.0.14",
     "pubnub": "~3.5.45",
-    "connect": "~2.11.0"
+    "connect": "~2.11.0",
+    "request": "~2.36.0"
   },
   "devDependencies": {
     "supervisor": "~0.5.6"
