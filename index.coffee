@@ -241,7 +241,7 @@ handleClefCallback = (req, res) ->
 												#New user created!  Woohoo!
 												req.session.logged_in_at = Date.now()
 												req.session.user = newUser
-												v0.responses.respond res
+												v0.responses.respond res, "<script type='text/javascript'>parent.postMessage({auth: true}, '*');</script>"
 									else
 										#user already exists.  Let's use that.
 										req.session.logged_in_at = Date.now()
