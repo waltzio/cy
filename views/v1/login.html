@@ -4,36 +4,32 @@
 </head>
 <body>
     <div id="clef-button-container" style="display:none;">
-        <div id="settings" data-app-id="{{app_id}}" data-redirect-url="{{url}}/clefCallback"></div>
+        <div id="settings" data-app-id="{{app_id}}" data-redirect-url="{{url}}/clefCallback" data-custom="true"></div>
     </div>
 <script type="text/javascript" src="https://clef.io/v3/clef.js"></script>
 <script>
     var button = new ClefButton({
         el: settings
     });
-    // just doing some filling stuff that we skip 
-    // by not rendering the button
-    button.body = document.body;
-    button.buttonFrame = {};
     button.render();
 
-     var settable = true;
+    var settable = true;
 
-     // Try setting a cookie
-     var testCookieName = 'testCookie' + Math.random().toString().slice(3);
-     var testCookie = testCookieName + '=;expires=Thu, 01 Jan 2050 00:00:01 GMT;';
-     document.cookie = testCookie;
-     // If the cookie doesn't set, 3rd party cookies are blocked
-     if (document.cookie.indexOf(testCookieName) == -1) {
-         settable = false;
-     } else {
-         document.cookie = testCookieName + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-     }
+    // Try setting a cookie
+    var testCookieName = 'testCookie' + Math.random().toString().slice(3);
+    var testCookie = testCookieName + '=;expires=Thu, 01 Jan 2050 00:00:01 GMT;';
+    document.cookie = testCookie;
+    // If the cookie doesn't set, 3rd party cookies are blocked
+    if (document.cookie.indexOf(testCookieName) == -1) {
+        settable = false;
+    } else {
+        document.cookie = testCookieName + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    }
 
-     parent.postMessage({
-         method: "thirdPartyCookies",
-         enabled: settable
-     }, '*');
+    parent.postMessage({
+        method: "thirdPartyCookies",
+        enabled: settable
+    }, '*');
 
 
     window.addEventListener('message', function(e) {
@@ -47,7 +43,7 @@
         if (e.data && e.data.method == "loadClef") {
             if (settable) {
                 button.overlayOpen();
-            } 
+            }
         }
     });
 </script>
