@@ -248,7 +248,7 @@ handleClefCallback = (req, res) ->
 										req.session.user = existingUser[0]
 										v0.responses.respond res, "<script type='text/javascript'>parent.postMessage({auth: true}, '*');</script>"
 						catch error
-							v0.response.internalError res, "Error getting user information from Clef. This probably isn't your fault."
+							v0.responses.internalError res, "Error getting user information from Clef. This probably isn't your fault."
 							console.log "Error parsing user response from Clef!"
 							console.log error
 			catch error
