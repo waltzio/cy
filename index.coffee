@@ -143,13 +143,17 @@ handleClefLogout = (req, res) ->
 			 						user = existingUser[0]
 			 						user.logged_out_at = Date.now()
 
-			 						user.save () ->
-			 							console.log "User logged out"
-			 							pubnub.publish
-						                   channel: user.identifier
-						                   message: "logout"
+			 						user.save (err) ->
+			 							if err
+			 								console.log "Error saving user with Clef ID #{userInfo.clef_id}", err
+			 								v0.responses.internalError res, "Error saving the user: #{err}"
+			 							else
+				 							console.log "User logged out"
+				 							pubnub.publish
+							                   channel: user.identifier
+							                   message: "logout"
 
-			 							v0.responses.respond res
+				 							v0.responses.respond res
 		 					catch error
 		 						v0.responses.internalError res
 		 						console.log "Error logging user out of Cy"
